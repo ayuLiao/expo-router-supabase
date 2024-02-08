@@ -1,28 +1,75 @@
-import { Link, Stack, useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
 
-export default function Page() {
+import { Stack } from "expo-router";
+import { SafeAreaView, Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { supabase } from "../../lib/supabase-client";
+import { useEffect, useState } from "react";
 
-    const router = useRouter()
+export default function SettingsPage() {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUser(user);
+      } else {
+        Alert.alert("Error Accessing User");
+      }
+    });
+  }, []);
+
+  const doLogout = async () => {
+    const {error} = await supabase.auth.signOut();
+    if (error) {
+      Alert.alert("Error Signing Out User", error.message);
+    }
+  }
+
   return (
-    <View>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen options={{ headerShown: true, title: "Settings" }} />
-      <Text>Index page of Settings Tab 2</Text>
-      <Pressable
-      onPress={() => {
-        router.push({
-            pathname: "/settings/page2",
-            params: {
-                id: '123'
-            }
-        })
-      }}
-      >
-        <View style={{borderWidth: 2, padding: 4, margin: 4, borderRadius: 6, backgroundColor: "green", borderColor: "green"}}>
-        <Text>Go to Page2</Text>
-
-        </View>
-      </Pressable>
-    </View>
+      <View style={{ padding: 16 }}>
+        <Text>{JSON.stringify(user, null, 2)}</Text>
+        <TouchableOpacity onPress={doLogout} style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>LOGOUT</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 40,
+    padding: 12,
+  },
+  verticallySpaced: {
+    paddingTop: 4,
+    paddingBottom: 4,
+    alignSelf: "stretch",
+  },
+  mt20: {
+    marginTop: 20,
+  },
+  buttonContainer: {
+    backgroundColor: "#000968",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    margin: 8,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
+  },
+  textInput: {
+    borderColor: "#000968",
+    borderRadius: 4,
+    borderStyle: "solid",
+    borderWidth: 1,
+    padding: 12,
+    margin: 8,
+  },
+});

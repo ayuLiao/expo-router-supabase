@@ -7,13 +7,13 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="home"
                 options={{
-                    tabBarIcon: ({ color }) => <Entypo name="home" size={20} color={color} />,
+                    tabBarIcon: ({ color }) => <Entypo name="home" size={24} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="settings"
                 options={{
-                    tabBarIcon: ({ color }) => <Ionicons name="settings" size={20} color={color} />,
+                    tabBarIcon: ({ color }) => <Ionicons name="settings" size={24} color={color} />,
                 }}
             />
         </Tabs>
